@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+
+  api:
+    build:
+      context: .
+    volumes:
+      - ~/docker-storage/docker-api:/storage
+      - .:/app
+    ports:
+      - 9000:9000
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_HOST=postgres
+
+  postgres:
+    image: postgres:latest
+    env_file: .env
+    command: postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off -c random_page_cost=1.0
+    volumes:
+      - ~/docker-storage/to-pg/db-data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+      - "POSTGRES_USER=${POSTGRES_USER}"
+      - "POSTGRES_DB=test"
+    ports:
+      - "${POSTGRES_PORT}:5432"

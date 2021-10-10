@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "trucoonline"
+version = "0.1.0"
+description = ""
+authors = ["Augusto Suffert <augusto.suffert@apura.com.br>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+uvicorn = "^0.15.0"
+pydantic = {extras = ["dotenv"], version = "^1.8.2"}
+SQLAlchemy = "^1.4.25"
+fastapi = "^0.68.1"
+asyncpg = "^0.24.0"
+httpx = "^0.19.0"
+orjson = "^3.6.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-asyncio = "^0.15.1"
+pytest-cov = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
