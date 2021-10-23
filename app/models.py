@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, ARRAY, JSON
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -47,5 +47,35 @@ class GamePlayer(Base):
     game_id = Column(Integer, ForeignKey("games.id"), primary_key=True)
 
     game = relationship("Game")
+
+
+class Truco(Base):
+
+    __tablename__ = "truco"
+
+    game_id = Column(Integer, ForeignKey("games.id"), primary_key=True)
+    all_cards = Column(ARRAY(String), default=[])
+    play_cards = Column(JSON, default={})
+
+    player1_points = Column(Integer, default=0)
+    player1_cards = Column(ARRAY(String), default=[])
+    player1_round_points = Column(Integer, default=0)
+
+    player2_points = Column(Integer, default=0)
+    player2_cards = Column(ARRAY(String), default=[])
+    player2_round_points = Column(Integer, default=0)
+
+    def as_json(self):
+        return {
+            "game_id": self.game_id,
+            "all_cards": self.all_cards,
+            "play_cards": self.play_cards,
+            "player1_points": self.player1_points,
+            "player1_cards": self.player1_cards,
+            "player1_round_points": self.player1_round_points,
+            "player2_points": self.player2_points,
+            "player2_cards": self.player2_cards,
+            "player2_round_points": self.player2_round_points
+        }
 
 

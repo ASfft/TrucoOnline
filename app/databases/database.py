@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .games import GamesDatabase
+from .truco import TrucosDatabase
 from .users import UsersDatabase
 
 
@@ -9,6 +10,7 @@ class Database:
         self.session = session
         self.users = UsersDatabase(self.session)
         self.games = GamesDatabase(self.session)
+        self.trucos = TrucosDatabase(self.session)
 
     async def flush(self):
         await self.session.flush()

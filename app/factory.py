@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from starlette.middleware.cors import CORSMiddleware
 
 from app.exceptions import register_exception_handlers
 from app.middlewares import register_middlewares
@@ -12,6 +13,14 @@ from app.queue.routes import router as queue_router
 
 def create_app(settings: Settings):
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     # noinspection PyUnusedLocal
     @app.route("/")
