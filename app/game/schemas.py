@@ -12,11 +12,10 @@ async def get_truco(context: RequestContext, game_id: int) -> Truco:
     return truco
 
 
-class StartRoundSchema(BaseModel):
-    game_id: int
-
-
 class PlayCardSchema(BaseModel):
-    game_id: int
     player: str
     card: str
+
+
+class TrucoSchema(BaseModel):
+    response: bool

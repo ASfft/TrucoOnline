@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, ARRAY, JSON
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, ARRAY, JSON, Float
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -54,28 +54,35 @@ class Truco(Base):
     __tablename__ = "truco"
 
     game_id = Column(Integer, ForeignKey("games.id"), primary_key=True)
-    all_cards = Column(ARRAY(String), default=[])
+    round_value = Column(Integer, default=2)
     play_cards = Column(JSON, default={})
+    turn = Column(String, default="player1")
+    last_round_starter = Column(String, default="player2")
 
     player1_points = Column(Integer, default=0)
     player1_cards = Column(ARRAY(String), default=[])
-    player1_round_points = Column(Integer, default=0)
+    player1_round_points = Column(Float, default=0)
+    player1_game_points = Column(Integer, default=0)
 
     player2_points = Column(Integer, default=0)
     player2_cards = Column(ARRAY(String), default=[])
-    player2_round_points = Column(Integer, default=0)
+    player2_round_points = Column(Float, default=0)
+    player2_game_points = Column(Integer, default=0)
 
-    def as_json(self):
+    def as_json(self, is_update: bool = False):
         return {
             "game_id": self.game_id,
-            "all_cards": self.all_cards,
+            "turn": self.turn,
+            "round_value": self.round_value,
             "play_cards": self.play_cards,
             "player1_points": self.player1_points,
             "player1_cards": self.player1_cards,
-            "player1_round_points": self.player1_round_points,
+            "player1_round_points": self.player1_round_points if is_update else int(self.player1_round_points),
+            "player1_game_points": self.player1_game_points,
             "player2_points": self.player2_points,
             "player2_cards": self.player2_cards,
-            "player2_round_points": self.player2_round_points
+            "player2_round_points": self.player2_round_points if is_update else int(self.player2_round_points),
+            "player2_game_points": self.player2_game_points,
         }
 
 
