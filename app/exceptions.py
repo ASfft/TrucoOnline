@@ -16,4 +16,6 @@ class BadRequest(Exception):
 def register_exception_handlers(app: FastAPI, settings: Settings):
     @app.exception_handler(BadRequest)
     async def handle_bad_request(request: Request, exc: BadRequest):
-        return ORJSONResponse({"msg": exc.msg, "status": 400, **exc.kwargs}, status_code=exc.status_code)
+        return ORJSONResponse(
+            {"msg": exc.msg, "status": 400, **exc.kwargs}, status_code=exc.status_code
+        )

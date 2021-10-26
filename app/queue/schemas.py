@@ -2,4 +2,4 @@ from pydantic import BaseModel
 
 
 class JoinQueueSchema(BaseModel):
-    player_id: int
+    game_mode: str

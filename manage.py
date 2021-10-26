@@ -10,11 +10,13 @@ cwd = os.path.abspath(os.path.dirname(__file__))
 def start():
     subprocess.run("docker-compose down", shell=True, cwd=cwd)
     subprocess.run("DOCKER_BUILDKIT=1 docker-compose up -d", shell=True, cwd=cwd)
-    subprocess.run("DOCKER_BUILDKIT=1 docker-compose logs -f -t api", shell=True, cwd=cwd)
+    subprocess.run(
+        "DOCKER_BUILDKIT=1 docker-compose logs -f -t api", shell=True, cwd=cwd
+    )
 
 
 def stop():
-    subprocess.run("docker-compose -p BTT down", shell=True, cwd=cwd)
+    subprocess.run("docker-compose -p TrucoOnline down", shell=True, cwd=cwd)
 
 
 def reset():
@@ -26,7 +28,7 @@ def reset():
 def start_db():
     stop()
     subprocess.run(
-        "DOCKER_BUILDKIT=1 docker-compose -p BTT up -d postgres",
+        "DOCKER_BUILDKIT=1 docker-compose -p TrucoOnline up -d postgres",
         shell=True,
         cwd=cwd,
     )

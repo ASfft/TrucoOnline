@@ -3,7 +3,7 @@ from fastapi.responses import ORJSONResponse
 
 from app.context import RequestContext, get_context
 from app.exceptions import BadRequest
-from app.game.helpers import win_checker, deal_cards, default_deck
+from app.game.helpers import win_checker, deal_cards, default_deck, assert_user_in_game
 from app.game.schemas import PlayCardSchema, get_truco, TrucoSchema
 
 router = APIRouter()
@@ -11,19 +11,19 @@ router = APIRouter()
 
 @router.get("/ia/{game_id}/details")
 async def game_details(game_id: int, context: RequestContext = Depends(get_context)):
+    await assert_user_in_game(context, game_id)
     truco = await get_truco(context, game_id)
     if not truco:
         deck = default_deck
         player1 = await deal_cards(deck)
         player2 = await deal_cards(deck)
         truco = await context.db.trucos.add(game_id, player1, player2)
-    return ORJSONResponse(
-        truco.as_json(), status_code=200
-    )
+    return ORJSONResponse(truco.as_json(), status_code=200)
 
 
 @router.post("/ia/{game_id}/start")
 async def start_round(game_id: int, context: RequestContext = Depends(get_context)):
+    await assert_user_in_game(context, game_id)
     truco = await get_truco(context, game_id)
     if not truco:
         raise BadRequest(msg="Missing Entity")
@@ -39,15 +39,14 @@ async def start_round(game_id: int, context: RequestContext = Depends(get_contex
         truco.last_round_starter = truco.turn
         await db.trucos.update(**truco.as_json(is_update=True))
         await db.session.refresh(truco)
-    return ORJSONResponse(
-        truco.as_json(), status_code=200
-    )
+    return ORJSONResponse(truco.as_json(), status_code=200)
 
 
 @router.post("/ia/{game_id}/play-card")
 async def play_card(
     game_id: int, schema: PlayCardSchema, context: RequestContext = Depends(get_context)
 ):
+    await assert_user_in_game(context, game_id)
     truco = await get_truco(context, game_id)
     if not truco:
         raise BadRequest(msg="Missing Entity")
@@ -131,6 +130,7 @@ async def play_card(
 async def truco(
     game_id: int, schema: TrucoSchema, context: RequestContext = Depends(get_context)
 ):
+    await assert_user_in_game(context, game_id)
     truco = await get_truco(context, game_id)
     if not truco:
         raise BadRequest(msg="Missing Entity")
@@ -170,4 +170,3 @@ async def truco(
         },
         status_code=200,
     )
-

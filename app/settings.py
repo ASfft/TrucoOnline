@@ -27,7 +27,8 @@ class Settings(BaseSettings):
     def db_engine(self):
         return create_async_engine(
             f"postgresql+asyncpg://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}",
-            echo=False, future=True
+            echo=False,
+            future=True,
         )
 
     async def create_db_session(self):

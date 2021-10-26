@@ -11,8 +11,9 @@ class GamesDatabase:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add(self, users_id: List[int]) -> Game:
+    async def add(self, users_id: List[int], is_full: bool) -> Game:
         new_game = Game()
+        new_game.is_full = is_full
         if len(users_id) == 2:
             new_game.is_full = True
         self.session.add(new_game)

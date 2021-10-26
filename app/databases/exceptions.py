@@ -7,8 +7,8 @@ class WrongCredentials(BadRequest):
 
 
 class AlreadyInGame(BadRequest):
-    def __init__(self):
-        super().__init__(msg="Já está em um jogo!")
+    def __init__(self, game_id: int):
+        super().__init__(msg="Já está em um jogo!", game_id=str(game_id))
 
 
 class GamePlayersLimitExceed(BadRequest):

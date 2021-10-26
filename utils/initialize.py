@@ -11,7 +11,7 @@ def optimize_tables_for_testing():
     # we do cleanup before test 'cause if previous test errored,
     # DB can contain dust
     for table in Base.metadata.sorted_tables:
-        table.__table_args__ = {'prefixes': ['UNLOGGED']}
+        table.__table_args__ = {"prefixes": ["UNLOGGED"]}
 
 
 async def flush_everything(settings: Settings):
@@ -32,7 +32,7 @@ async def main():
     app, settings_ = create_app(get_settings())
     conditions = (
         settings_.debug_mode,
-        settings_.pg_host.startswith(("127.0.0.1", "localhost"))
+        settings_.pg_host.startswith(("127.0.0.1", "localhost")),
     )
     if all(conditions):
         await initialize_application(settings_, flush_database=True)

@@ -12,11 +12,16 @@ from app.queue.routes import router as queue_router
 
 
 def create_app(settings: Settings):
-    app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+    app = FastAPI()
+
+    origins = [
+        "http://localhost",
+        "http://localhost:3000",
+    ]
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
