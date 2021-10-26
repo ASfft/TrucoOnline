@@ -55,8 +55,10 @@ async def create_login_session(
     return response, user
 
 
-async def create_random_game(db: Database, users: List[User]) -> Game:
-    game = await db.games.add(users_id=[user.id for user in users])
+async def create_random_game(
+    db: Database, users: List[User], is_full: bool = True
+) -> Game:
+    game = await db.games.add(users_id=[user.id for user in users], is_full=is_full)
 
     query = select(Game).where(Game.id == game.id)
     return (await db.session.execute(query)).scalars().first()

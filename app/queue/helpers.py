@@ -1,5 +1,4 @@
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
 
 from app.context import RequestContext
 from app.models import Game, GamePlayer

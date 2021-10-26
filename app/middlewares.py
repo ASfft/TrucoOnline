@@ -1,20 +1,10 @@
-from typing import Optional
-
-import re
 from fastapi import FastAPI, Request
-from fastapi.responses import ORJSONResponse
 from sqlalchemy import select
 
 from app.models import User
-from utils.constants import SESSION_COOKIE_NAME
 from .databases.database import Database
 
 from .settings import Settings
-
-UNAUTHENTICATED_PATHS = {
-    "/",
-    "/auth/login",
-}
 
 
 def register_middlewares(app: FastAPI, settings: Settings):
@@ -26,28 +16,16 @@ def register_middlewares(app: FastAPI, settings: Settings):
         request.state.db = Database(session)
         request.state.settings = settings
 
-        try:
-            token = int(request.cookies.get(SESSION_COOKIE_NAME))
-        except ValueError:
-            token = None
+        auth_header = request.headers.get("Authorization", "")
+        token = auth_header[auth_header.find("Bearer") + 7 :]
 
         if token:
-            query = (select(User).where(User.id == token))
-            user: Optional[User] = (await session.execute(query)).scalars().first()
-
-            if user:
-                request.state.user = user
-                return await call_next(request)
-
-        # Checking if this is a public request and should be allowed anyway.
-        if request.url.path in UNAUTHENTICATED_PATHS:
+            query = select(User).where(User.id == int(token))
+            user = (await session.execute(query)).scalars().first()
+            request.state.user = user
             return await call_next(request)
 
-        response = ORJSONResponse(
-            {"msg": "Não autorizado", "status": 401}, status_code=401
-        )
-        response.set_cookie(SESSION_COOKIE_NAME, httponly=True, samesite="strict", expires=0)
-        return response
+        return await call_next(request)
 
     @app.middleware("http")
     async def close_db_session(request: Request, call_next):

@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from sqlalchemy import select
 
 from app.context import RequestContext
-from app.exceptions import BadRequest
 from app.models import Truco
 
 

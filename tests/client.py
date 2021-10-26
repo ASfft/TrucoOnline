@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 from app.settings import Settings
-from utils.constants import SESSION_COOKIE_NAME
 
 
 class Client(AsyncClient):
@@ -15,10 +14,11 @@ class Client(AsyncClient):
         password: str = None,
         ip_address: str = "127.0.0.1",
         *args,
-        **kwargs
+        **kwargs,
     ):
-        kwargs["cookies"] = kwargs.get("cookies", {})
-        kwargs["cookies"][SESSION_COOKIE_NAME] = str(user.id) if user else ""
+        if user:
+            kwargs["headers"] = kwargs.get("headers", {})
+            kwargs["headers"]["Authorization"] = f"Bearer {user.id}"
         transport = httpx.ASGITransport(
             app=app, raise_app_exceptions=True, client=(ip_address, 80)
         )
